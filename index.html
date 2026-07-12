@@ -1,1 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pra Amanda ❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine: #2B0A1F;
+    --wine-deep: #1a0613;
+    --pink: #FF2D78;
+    --gold: #FFD23F;
+    --flame: #FF6B35;
+    --cream: #FFF5E8;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    background: radial-gradient(ellipse at 50% 0%, #4a0f2e 0%, var(--wine) 45%, var(--wine-deep) 100%);
+    font-family:'Baloo 2', sans-serif;
+    color:var(--cream);
+    user-select:none;
+  }
+  #app{ position:relative; width:100vw; height:100vh; overflow:hidden; }
+
+  /* --- disco / brega ambiance --- */
+  .light{
+    position:absolute; width:14px; height:14px; border-radius:50%;
+    filter: blur(1px);
+    animation: blink 1.4s infinite ease-in-out;
+    box-shadow:0 0 12px 4px currentColor;
+  }
+  @keyframes blink{
+    0%,100%{opacity:.25; transform:scale(.8);}
+    50%{opacity:1; transform:scale(1.15);}
+  }
+
+  .screen{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:24px;
+    transition:opacity .4s ease;
+  }
+  .hidden{ display:none; }
+
+  h1.title{
+    font-family:'Pacifico', cursive;
+    font-size:clamp(2.2rem, 8vw, 3.6rem);
+    color:var(--gold);
+    text-shadow: 0 0 18px rgba(255,210,63,.55), 3px 3px 0 var(--pink);
+    margin: 0 0 6px;
+    line-height:1.15;
+  }
+  p.sub{
+    font-size:clamp(1rem, 3.4vw, 1.25rem);
+    max-width:520px;
+    color:var(--cream);
+    opacity:.92;
+    margin: 4px 0 22px;
+  }
+
+  .jukebox{
+    display:flex; align-items:center; gap:10px;
+    background:rgba(0,0,0,.28);
+    border:2px solid var(--gold);
+    border-radius:999px;
+    padding:8px 18px;
+    margin-bottom:26px;
+    font-size:.95rem;
+    box-shadow:0 0 20px rgba(255,45,120,.35);
+  }
+  .eq{ display:flex; align-items:flex-end; gap:3px; height:18px; }
+  .eq span{
+    width:3px; background:var(--pink); border-radius:2px;
+    animation: eq 0.8s infinite ease-in-out;
+  }
+  .eq span:nth-child(1){ animation-delay: 0s; }
+  .eq span:nth-child(2){ animation-delay: .15s; }
+  .eq span:nth-child(3){ animation-delay: .3s; }
+  .eq span:nth-child(4){ animation-delay: .1s; }
+  @keyframes eq{
+    0%,100%{ height:4px; }
+    50%{ height:18px; }
+  }
+
+  button.btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:1.15rem;
+    color:var(--wine-deep);
+    background: linear-gradient(180deg, var(--gold), var(--flame));
+    border:none;
+    padding:14px 34px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow: 0 6px 0 #b5490f, 0 8px 22px rgba(0,0,0,.4);
+    transition: transform .08s ease;
+  }
+  button.btn:active{ transform:translateY(4px); box-shadow: 0 2px 0 #b5490f, 0 4px 12px rgba(0,0,0,.4); }
+
+  /* --- HUD --- */
+  #hud{
+    position:absolute; top:0; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 18px;
+    z-index:5;
+    font-weight:800;
+    font-size:1.05rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,.5);
+  }
+  #lives{ display:flex; gap:4px; font-size:1.3rem; }
+  #score{ color:var(--gold); }
+
+  /* --- game --- */
+  #game{ position:absolute; inset:0; }
+  .item{
+    position:absolute;
+    font-size:2.1rem;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,.4));
+    will-change: transform;
+  }
+  #catcher{
+    position:absolute;
+    bottom:26px;
+    width:96px; height:70px;
+    transform:translateX(-50%);
+    z-index:4;
+  }
+  #catcher .grill{
+    width:100%; height:100%;
+    background: linear-gradient(180deg, var(--pink), #b3164f);
+    border-radius: 50% 50% 46% 46% / 60% 60% 40% 40%;
+    border:3px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.8rem;
+    box-shadow: 0 0 22px rgba(255,45,120,.6), inset 0 -6px 10px rgba(0,0,0,.25);
+    animation: sizzle 0.5s infinite alternate;
+  }
+  @keyframes sizzle{
+    from{ box-shadow: 0 0 18px rgba(255,45,120,.5), inset 0 -6px 10px rgba(0,0,0,.25); }
+    to{ box-shadow: 0 0 28px rgba(255,210,63,.7), inset 0 -6px 10px rgba(0,0,0,.25); }
+  }
+
+  #instructions{
+    position:absolute; bottom:106px; left:0; right:0;
+    text-align:center; font-size:.85rem; opacity:.75;
+    pointer-events:none;
+  }
+
+  .heart-msg{
+    max-width:560px;
+    font-size:clamp(1rem, 3.2vw, 1.2rem);
+    line-height:1.6;
+    background:rgba(0,0,0,.25);
+    border:2px solid var(--gold);
+    border-radius:20px;
+    padding:22px 26px;
+    margin-bottom:22px;
+  }
+
+  .footer-note{
+    position:absolute; bottom:10px; font-size:.75rem; opacity:.5;
+  }
+
+  @media (max-width:420px){
+    #catcher{ width:80px; height:58px; }
+    .item{ font-size:1.8rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TELA 1: INTRO -->
+  <div id="intro" class="screen">
+    <div class="jukebox">
+      <div class="eq"><span></span><span></span><span></span><span></span></div>
+      <span>tocando as brega românticas favoritas dela</span>
+    </div>
+    <h1 class="title">Ei, Amanda... 💕</h1>
+    <p class="sub">Preparei uma surpresinha especial só pra você. Um joguinho com as coisas que você mais ama: muito churrasco e um clima de brega apaixonante. Bora jogar?</p>
+    <button class="btn" id="startBtn">Começar ❤️</button>
+  </div>
+
+  <!-- TELA 2: JOGO -->
+  <div id="gameScreen" class="screen hidden" style="justify-content:flex-start; padding:0;">
+    <div id="hud">
+      <div id="score">🍖 0 / 20</div>
+      <div id="lives">❤️❤️❤️</div>
+    </div>
+    <div id="game">
+      <div id="catcher"><div class="grill">🔥</div></div>
+    </div>
+    <div id="instructions">arraste o dedo ou use as setas ⬅️➡️ pra pegar o churrasco</div>
+  </div>
+
+  <!-- TELA 3: VITORIA -->
+  <div id="winScreen" class="screen hidden">
+    <h1 class="title">Você venceu! 🥰</h1>
+    <div class="heart-msg">
+      Assim como você pegou cada espetinho voando, você pegou meu coração inteirinho.<br><br>
+      Com você, toda comida fica mais gostosa, toda brega fica mais bonita, e todo dia comum vira dia especial. 🎶🔥❤️<br><br>
+      Te amo, Amanda. Bora fazer um churrasco de verdade pra comemorar?
+    </div>
+    <button class="btn" id="restartBtn">Jogar de novo</button>
+  </div>
+
+  <!-- TELA 4: PERDEU -->
+  <div id="loseScreen" class="screen hidden">
+    <h1 class="title">Ihh, escapou! 😅</h1>
+    <p class="sub">Relaxa, meu amor por você não escapa tão fácil assim. Tenta de novo?</p>
+    <button class="btn" id="retryBtn">Tentar de novo</button>
+  </div>
+
+  <div class="footer-note">feito com amor (e um pouco de churrasco) pra você 🍢</div>
+</div>
+
+<script>
+(function(){
+  const app = document.getElementById('app');
+
+  // luzes de fundo estilo brega/festa
+  const lightColors = ['#FF2D78','#FFD23F','#FF6B35','#ffffff'];
+  for(let i=0;i<24;i++){
+    const l = document.createElement('div');
+    l.className='light';
+    l.style.left = Math.random()*100+'vw';
+    l.style.top = Math.random()*100+'vh';
+    l.style.color = lightColors[i % lightColors.length];
+    l.style.background = lightColors[i % lightColors.length];
+    l.style.animationDelay = (Math.random()*1.4)+'s';
+    l.style.animationDuration = (1+Math.random()*1.4)+'s';
+    app.appendChild(l);
+  }
+
+  const intro = document.getElementById('intro');
+  const gameScreen = document.getElementById('gameScreen');
+  const winScreen = document.getElementById('winScreen');
+  const loseScreen = document.getElementById('loseScreen');
+  const game = document.getElementById('game');
+  const catcher = document.getElementById('catcher');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+
+  const GOOD = ['🍖','🌭','🍢','🧀','🌽','🍺','🥖'];
+  const BAD = ['🥦','🍆','🥬'];
+
+  let score = 0, lives = 3, running = false, spawnTimer = null, loopTimer = null;
+  let catcherX = window.innerWidth/2;
+  const items = [];
+
+  function setCatcherPos(x){
+    catcherX = Math.max(50, Math.min(window.innerWidth-50, x));
+    catcher.style.left = catcherX+'px';
+  }
+  setCatcherPos(window.innerWidth/2);
+
+  window.addEventListener('mousemove', e=>{ if(running) setCatcherPos(e.clientX); });
+  window.addEventListener('touchmove', e=>{
+    if(running && e.touches[0]) setCatcherPos(e.touches[0].clientX);
+  }, {passive:true});
+  window.addEventListener('keydown', e=>{
+    if(!running) return;
+    if(e.key==='ArrowLeft') setCatcherPos(catcherX-30);
+    if(e.key==='ArrowRight') setCatcherPos(catcherX+30);
+  });
+
+  function updateHud(){
+    scoreEl.textContent = `🍖 ${score} / 20`;
+    livesEl.textContent = '❤️'.repeat(Math.max(lives,0)) + '🖤'.repeat(3-Math.max(lives,0));
+  }
+
+  function spawnItem(){
+    const isBad = Math.random() < 0.28;
+    const emoji = isBad ? BAD[Math.floor(Math.random()*BAD.length)] : GOOD[Math.floor(Math.random()*GOOD.length)];
+    const el = document.createElement('div');
+    el.className='item';
+    el.textContent = emoji;
+    const x = 30 + Math.random()*(window.innerWidth-60);
+    el.style.left = x+'px';
+    el.style.top = '-40px';
+    game.appendChild(el);
+    items.push({el, x, y:-40, speed: 2.2+Math.random()*2.2+score*0.03, bad:isBad, caught:false});
+  }
+
+  function loop(){
+    const catcherTop = window.innerHeight-26-70;
+    for(let i=items.length-1;i>=0;i--){
+      const it = items[i];
+      it.y += it.speed;
+      it.el.style.top = it.y+'px';
+
+      if(!it.caught && it.y > catcherTop && it.y < catcherTop+60 && Math.abs(it.x-catcherX) < 55){
+        it.caught = true;
+        if(it.bad){
+          lives--;
+          flashCatcher('#ff3333');
+        } else {
+          score++;
+          flashCatcher('#FFD23F');
+        }
+        updateHud();
+        it.el.remove();
+        items.splice(i,1);
+        if(score>=20) return endGame(true);
+        if(lives<=0) return endGame(false);
+        continue;
+      }
+
+      if(it.y > window.innerHeight+40){
+        it.el.remove();
+        items.splice(i,1);
+      }
+    }
+    loopTimer = requestAnimationFrame(loop);
+  }
+
+  function flashCatcher(color){
+    const grill = catcher.querySelector('.grill');
+    grill.style.boxShadow = `0 0 34px ${color}`;
+    setTimeout(()=>{ grill.style.boxShadow=''; }, 180);
+  }
+
+  function startGame(){
+    score = 0; lives = 3;
+    items.forEach(it=>it.el.remove());
+    items.length = 0;
+    updateHud();
+    intro.classList.add('hidden');
+    winScreen.classList.add('hidden');
+    loseScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    running = true;
+    spawnTimer = setInterval(spawnItem, 800);
+    loopTimer = requestAnimationFrame(loop);
+  }
+
+  function endGame(won){
+    running = false;
+    clearInterval(spawnTimer);
+    cancelAnimationFrame(loopTimer);
+    gameScreen.classList.add('hidden');
+    if(won){ winScreen.classList.remove('hidden'); }
+    else{ loseScreen.classList.remove('hidden'); }
+  }
+
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  document.getElementById('restartBtn').addEventListener('click', startGame);
+  document.getElementById('retryBtn').addEventListener('click', startGame);
+})();
+</script>
+</body>
+</html>
 
